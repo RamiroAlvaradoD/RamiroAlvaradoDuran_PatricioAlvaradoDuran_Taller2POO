@@ -1,5 +1,14 @@
 package ucn.taller2;
 
 public class Vulnerabilidad {
+	private int puerto;
+	private String nombre;
+	private String descripcion;
+	
+	public Vulnerabilidad (int puerto, String nombre, String descripcion) {
+		this.puerto = puerto;
+		this.nombre = nombre;
+		this.descripcion = descripcion;
+	}
 
 }
