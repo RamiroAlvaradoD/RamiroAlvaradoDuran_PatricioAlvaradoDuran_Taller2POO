@@ -1,9 +1,9 @@
 package ucn.taller2;
 
 public class Puerto {
-    private final int numero;
-    private final String estado; // "abierto" o "cerrado"
-    private final Vulnerabilidad vulnerabilidad; // puede ser null
+    private int numero;
+    private String estado; // "abierto" o "cerrado"
+    private Vulnerabilidad vulnerabilidad; // puede ser null
 
     public Puerto(int numero, String estado, Vulnerabilidad vulnerabilidad) {
         this.numero = numero;
@@ -22,6 +22,10 @@ public class Puerto {
     public Vulnerabilidad getVulnerabilidad() {
         return vulnerabilidad;
     }
+    public void setVulnerabilidad(Vulnerabilidad vuln) {
+    	vulnerabilidad = vuln;
+    }
+
 
     @Override
     public String toString() {

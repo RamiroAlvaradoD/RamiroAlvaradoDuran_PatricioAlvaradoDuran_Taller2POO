@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Sistema {
-
-	
+	private ArrayList<PC> listaPCs = new ArrayList<>();
+	private ArrayList<Puerto> listaPuertos = new ArrayList<>();
+	private ArrayList<Vulnerabilidad> listaVulnerabilidades = new ArrayList<>();
 	public boolean login(String usuario, String contraseña) {
 		try {
 			Scanner sc = new Scanner(new File("data/usuarios.txt"));
@@ -89,5 +90,43 @@ public class Sistema {
 	public Object ordenarPCsPorClaseIP() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public void loadFiles() {
+		loadPC("data/pcs.txt");
+		loadPorts("data/puertos.txt");
+		loadVuln("data/vulnerabilidades.txt");
+		
+	}
+	private void loadVuln(String file) {
+		try {
+			Scanner sc = new Scanner(new File(file));
+			while (sc.hasNextLine()) {
+	            String linea = sc.nextLine();
+	            String[] data = linea.split("|");
+	            int port = Integer.parseInt(data[0]);
+	            String name = data[1];
+	            String desc = data[2];
+	            Vulnerabilidad vuln = new Vulnerabilidad(port, name, desc);
+	            listaVulnerabilidades.add(vuln);
+	            
+	            for(Puerto puerto : listaPuertos) {
+	            	if(puerto.getNumero() == port) {
+	            		puerto.setVulnerabilidad(vuln);
+	            	}
+	            }
+	            
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("No se puede abrir "+file);
+		}
+		
+	}
+	private void loadPorts(String file) {
+		// TODO Auto-generated method stub
+		
+	}
+	private void loadPC(String file) {
+		
+		
 	}
 }

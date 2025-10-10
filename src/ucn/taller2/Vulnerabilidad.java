@@ -1,9 +1,9 @@
 package ucn.taller2;
 
 public class Vulnerabilidad {
-    private final int puerto;
-    private final String nombre;
-    private final String descripcion;
+    private int puerto;
+    private String nombre;
+    private String descripcion;
 
     public Vulnerabilidad(int puerto, String nombre, String descripcion) {
         this.puerto = puerto;

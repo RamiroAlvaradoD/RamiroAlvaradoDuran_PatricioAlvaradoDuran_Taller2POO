@@ -9,6 +9,7 @@ public class UserInterface {
 
 	public void start() {
 		boolean continuar = true;
+		s.loadFiles();
 		while (continuar) {
 			System.out.println("\nLOGIN  ");
 			System.out.println("1) Entrar como ADMIN");

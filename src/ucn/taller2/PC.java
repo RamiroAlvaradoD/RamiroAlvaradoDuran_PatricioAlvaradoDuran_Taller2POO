@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 
 public class PC {
-private final String id;
-private final String ip;
-private final String sistemaOperativo;
-private final ArrayList<Puerto> puertos;
+private String id;
+private String ip;
+private String sistemaOperativo;
+private ArrayList<Puerto> puertos;
 
 
 public PC(String id, String ip, String sistemaOperativo) {
