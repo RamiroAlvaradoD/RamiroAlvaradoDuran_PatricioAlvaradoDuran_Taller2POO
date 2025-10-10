@@ -1,16 +1,20 @@
 package ucn.taller2;
 
 public class Puerto {
+	private String id;
     private int numero;
     private String estado; // "abierto" o "cerrado"
     private Vulnerabilidad vulnerabilidad; // puede ser null
 
-    public Puerto(int numero, String estado, Vulnerabilidad vulnerabilidad) {
+    public Puerto(String id, int numero, String estado) {
+    	this.id = id;
         this.numero = numero;
         this.estado = estado;
-        this.vulnerabilidad = vulnerabilidad;
     }
 
+    public String getId() {
+    	return id;
+    }
     public int getNumero() {
         return numero;
     }
