@@ -68,37 +68,60 @@ public class Sistema {
 
 	public void agregarOEliminarPC() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void verListaCompletaPCs() {
-		// TODO Auto-generated method stub
-		
+		for (PC pc : listaPCs) {
+			System.out.println(pc);
+			System.out.println("Puertos:");
+			for (Puerto puerto : pc.getPuertos()) {
+				String vuln = (puerto.getVulnerabilidad() != null) ? puerto.getVulnerabilidad().getNombre()
+						: "Sin vulnerabilidad";
+				System.out.println("  - " + puerto.getNumero() + " (" + puerto.getEstado() + ", " + vuln + ")");
+			}
+		}
 	}
 
 	public void clasificarRiesgoPCs() {
-		// TODO Auto-generated method stub
-		
+		for (PC pc : listaPCs) {
+			int cantVuln = 0;
+			for (Puerto p : pc.getPuertos()) {
+				if (p.getVulnerabilidad() != null) {
+					cantVuln++;
+					System.out.println(pc);
+				}
+			}
+			String risk = (cantVuln == 0 || cantVuln == 1) ? "Bajo": (cantVuln <=2) ? "Medio" : "Alto";
+			System.out.println("PC "+pc.getId() + " - Nivel de riesgo = "+risk+" ("+cantVuln + " vulnerabilidades");
+		}
+
 	}
 
 	public void verListaPCs() {
-		// TODO Auto-generated method stub
-		
+		for (PC pc : listaPCs) {
+			System.out.println(pc);
+		}
+
 	}
 
 	public void escanearPCyGuardar() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void verPuertosAbiertosRed() {
-		// TODO Auto-generated method stub
+		for (Puerto p : listaPuertos) {
+			if (p.getEstado().equals("Abierto")) {
+				System.out.println(p);
+			}
+		}
 
 	}
 
 	public void ordenarPCsPorClaseIP() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void loadFiles() {
@@ -113,7 +136,7 @@ public class Sistema {
 			Scanner sc = new Scanner(new File(file));
 			while (sc.hasNextLine()) {
 				String linea = sc.nextLine();
-				String[] data = linea.split("|");
+				String[] data = linea.split("\\|");
 				int port = Integer.parseInt(data[0]);
 				String name = data[1];
 				String desc = data[2];
@@ -138,7 +161,7 @@ public class Sistema {
 			Scanner sc = new Scanner(new File(file));
 			while (sc.hasNextLine()) {
 				String linea = sc.nextLine();
-				String[] data = linea.split("|");
+				String[] data = linea.split("\\|");
 				String idPC = data[0];
 				int numPort = Integer.parseInt(data[1]);
 				String estado = data[2];
@@ -163,7 +186,7 @@ public class Sistema {
 			Scanner sc = new Scanner(new File(file));
 			while (sc.hasNextLine()) {
 				String linea = sc.nextLine();
-				String[] data = linea.split("|");
+				String[] data = linea.split("\\|");
 				String id = data[0];
 				String ip = data[1];
 				String os = data[2];
