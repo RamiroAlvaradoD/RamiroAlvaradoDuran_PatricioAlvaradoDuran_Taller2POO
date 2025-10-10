@@ -66,39 +66,39 @@ public class Sistema {
 		return null; // si no encuentra al usuario
 	}
 
-	public Object agregarOEliminarPC() {
+	public void agregarOEliminarPC() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	public Object verListaCompletaPCs() {
+	public void verListaCompletaPCs() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	public Object clasificarRiesgoPCs() {
+	public void clasificarRiesgoPCs() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	public Object verListaPCs() {
+	public void verListaPCs() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	public Object escanearPCyGuardar() {
+	public void escanearPCyGuardar() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
-	public Object verPuertosAbiertosRed() {
+	public void verPuertosAbiertosRed() {
 		// TODO Auto-generated method stub
-		return null;
+
 	}
 
-	public Object ordenarPCsPorClaseIP() {
+	public void ordenarPCsPorClaseIP() {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	public void loadFiles() {
