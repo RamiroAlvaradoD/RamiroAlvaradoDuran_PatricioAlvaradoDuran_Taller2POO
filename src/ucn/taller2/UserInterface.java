@@ -12,22 +12,31 @@ public class UserInterface {
 		s.loadFiles();
 		while (continuar) {
 			System.out.println("\nLOGIN  ");
-			System.out.println("1) Entrar como ADMIN");
-			System.out.println("2) Entrar como USER");
-			System.out.println("0) Salir");
-			System.out.print("Opción: ");
-			int opcion = leerInt();
+			System.out.print("Usuario: ");
+			String usuario = sc.nextLine();
+			System.out.println("Contraseña: ");
+			String pass = sc.nextLine();
 
-			switch (opcion) {
-			case 1 -> mostrarMenuAdmin();
-			case 2 -> mostrarMenuUsuario();
-			case 0 -> {
-				System.out.println("Saliendo del sistema...");
-				continuar = false;
+			if (s.login(usuario, pass)) {
+				String rol = s.getRolUsuario(usuario);
+				System.out.println("Bienvenid@, has entrado como " + rol);
+				if ("ADMIN".equalsIgnoreCase(rol)) {
+					mostrarMenuAdmin();
+				}else if ("USER".equalsIgnoreCase(rol)) {
+					mostrarMenuUsuario();
+				}
+			} else {
+				System.out.println("Usuario o contraseña incorrectos. Intenta de nuevo");
+
 			}
-			default -> System.out.println("Opción inválida.");
+			System.out.print("\nDeseas intentar de nuevo?(S/N): ");
+			String op = sc.nextLine();
+			if (!op.equalsIgnoreCase("S")) {
+				System.out.println("Saliendo del sistema...");
+				continuar =false;
 			}
 		}
+
 	}
 
 	private void mostrarMenuAdmin() {
