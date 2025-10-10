@@ -16,25 +16,19 @@ public class Sistema {
 	private ArrayList<Vulnerabilidad> listaVulnerabilidades = new ArrayList<>();
 	private ArrayList<Usuario> listaUsuarios = new ArrayList<>();
 	private String usuarioActual;
+	
 	public boolean login(String usuario, String contraseña) {
-		try {
-			Scanner sc = new Scanner(new File("data/usuarios.txt"));
-			while (sc.hasNextLine()) {
-				String line = sc.nextLine();
-				String[] data = line.split(";");
-				String userStored = data[0];
-				String hashPass = data[1];
-				String userType = data[2];
-				if (userStored.equals(usuario)) {
-					String hashInput = hashSHA256Base64(contraseña);
-					sc.close();
-					usuarioActual = userStored;
-					return hashInput.equals(hashPass);
-				}
+		for (Usuario u : listaUsuarios) {
+			if (u.getUsername().equals(usuario)){
+				String hashInput = hashSHA256Base64(contraseña);
+
+				usuarioActual = usuario;
+				return hashInput.equals(u.getHash());
 			}
-		} catch (FileNotFoundException e) {
-			System.out.println("Error leyendo usuarios.txt");
 		}
+				
+			
+		
 		return false;
 	}
 
