@@ -14,7 +14,8 @@ public class Sistema {
 	private ArrayList<PC> listaPCs = new ArrayList<>();
 	private ArrayList<Puerto> listaPuertos = new ArrayList<>();
 	private ArrayList<Vulnerabilidad> listaVulnerabilidades = new ArrayList<>();
-
+	private ArrayList<Usuario> listaUsuarios = new ArrayList<>();
+	private String usuarioActual;
 	public boolean login(String usuario, String contraseña) {
 		try {
 			Scanner sc = new Scanner(new File("data/usuarios.txt"));
@@ -27,6 +28,7 @@ public class Sistema {
 				if (userStored.equals(usuario)) {
 					String hashInput = hashSHA256Base64(contraseña);
 					sc.close();
+					usuarioActual = userStored;
 					return hashInput.equals(hashPass);
 				}
 			}
@@ -93,7 +95,7 @@ public class Sistema {
 				}
 			}
 			String risk = (cantVuln == 0 || cantVuln == 1) ? "Bajo": (cantVuln <=2) ? "Medio" : "Alto";
-			System.out.println("PC "+pc.getId() + " - Nivel de riesgo = "+risk+" ("+cantVuln + " vulnerabilidades");
+			System.out.println("PC "+pc.getId() + " - Nivel de riesgo = "+risk+" ("+cantVuln + " vulnerabilidades)");
 		}
 
 	}
@@ -106,7 +108,39 @@ public class Sistema {
 	}
 
 	public void escanearPCyGuardar() {
-		// TODO Auto-generated method stub
+		
+		Scanner sc = new Scanner(System.in);
+		System.out.print("ID del PC a escanear: ");
+		String id = sc.nextLine();
+		for (PC pc : listaPCs) {
+			if (pc.getId().equals(id)) {
+				int cantVuln = 0;
+				for (Puerto puerto : pc.getPuertos()) {
+					if (puerto.getVulnerabilidad() != null) cantVuln++;
+				}
+				String nivel = (cantVuln == 0 || cantVuln == 1) ? "Bajo": (cantVuln <=2) ? "Medio" : "Alto";
+				
+				
+				//Mostrar informacion
+				System.out.println("Escaneo de: "+id);
+				System.out.println("IP: "+pc.getIp() + ", SO: "+pc.getSistemaOperativo());
+				for (Puerto puerto : pc.getPuertos()) {
+					System.out.println(puerto);
+				}
+				System.out.println("Nivel de riesgo: "+ nivel);
+				
+				try {
+					FileWriter fw = new FileWriter("data/reportes.txt", true);
+					fw.write("Usuario: "+ usuarioActual+", PC: "+id+ ", IP: "+pc.getIp()+", SO: "+pc.getSistemaOperativo()+", Puertos: "
+					+pc.getPuertos().toString()+", Nivel de riesgo: "+nivel+", Fecha: "+java.time.LocalDateTime.now()+"\n");
+					fw.close();
+				}catch(IOException e) {
+					System.out.println("Error al guardar el reporte");					
+				}
+				return;
+			}	
+		}
+		System.out.println("No se encontro ese PC");
 
 	}
 
@@ -120,7 +154,25 @@ public class Sistema {
 	}
 
 	public void ordenarPCsPorClaseIP() {
-		// TODO Auto-generated method stub
+		ArrayList<PC> claseA = new ArrayList<>();
+		ArrayList<PC> claseB = new ArrayList<>();
+		ArrayList<PC> claseC = new ArrayList<>();
+		
+		for (PC pc : listaPCs) {
+			String[] ipParts = pc.getIp().split("\\.");
+			int primerOct = Integer.parseInt(ipParts[0]);
+			if (primerOct >= 0 && primerOct <= 127) claseA.add(pc);
+			else if (primerOct >= 128 && primerOct <= 191) claseB.add(pc);
+			else if (primerOct >= 192 && primerOct <= 223) claseC.add(pc);
+		}
+		System.out.println("Clase A:");
+		claseA.forEach(pc -> System.out.println(pc));
+		
+		System.out.println("Clase B:");
+		claseB.forEach(pc -> System.out.println(pc));
+		
+		System.out.println("Clase C:");
+		claseC.forEach(pc -> System.out.println(pc));
 
 	}
 
@@ -128,7 +180,26 @@ public class Sistema {
 		loadPC("data/pcs.txt");
 		loadPorts("data/puertos.txt");
 		loadVuln("data/vulnerabilidades.txt");
+		loadUsers("data/usuarios.txt");
 
+	}
+
+	private void loadUsers(String file) {
+		try {
+			Scanner sc = new Scanner(new File(file));
+			while (sc.hasNextLine()) {
+				String linea = sc.nextLine();
+				String[] data = linea.split(";");
+				String name = data[0];
+				String hash = data[1];
+				String type = data[2];
+				Usuario usuario = new Usuario(name, hash, type);
+				listaUsuarios.add(usuario);
+			}
+		}catch(FileNotFoundException e) {
+			
+		}
+		
 	}
 
 	public void loadVuln(String file) {

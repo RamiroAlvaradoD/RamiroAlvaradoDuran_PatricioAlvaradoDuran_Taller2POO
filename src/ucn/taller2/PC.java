@@ -35,7 +35,7 @@ public class PC {
 
 	@Override
 	public String toString() {
-		return "PC[" + "id='" + id + '\'' + ", ip='" + ip + '\'' + ", sistemaOperativo='" + sistemaOperativo + '\''
+		return "PC[" + "id='" + id + '\'' + ", ip='" + ip + '\'' + ", OS='" + sistemaOperativo + '\''
 				+ ']';
 	}
 }
