@@ -3,6 +3,12 @@ package ucn.taller2;
 import java.util.Scanner;
 
 public class UserInterface {
+	private Sistema sistema;
+	public void setSistema(Sistema sistema) {
+	    this.sistema = sistema;
+	}
+
+	
 
 	private final Scanner sc = new Scanner(System.in);
 	Sistema s = new Sistema();
@@ -13,12 +19,12 @@ public class UserInterface {
 		while (continuar) {
 			System.out.println("\nLOGIN  ");
 			System.out.print("Usuario: ");
-			String usuario = sc.nextLine();
-			System.out.println("Contraseña: ");
+			String user = sc.nextLine();
+			System.out.print("Contraseña: ");
 			String pass = sc.nextLine();
 
-			if (s.login(usuario, pass)) {
-				String rol = s.getRolUsuario(usuario);
+			if (s.login(user, pass)) {
+				String rol = s.getRolUsuario(user);
 				System.out.println("Bienvenid@, has entrado como " + rol);
 				if ("ADMIN".equalsIgnoreCase(rol)) {
 					mostrarMenuAdmin();
@@ -40,62 +46,52 @@ public class UserInterface {
 	}
 
 	private void mostrarMenuAdmin() {
-		int op;
-		do {
-			System.out.println("\nMENÚ ADMIN");
-			System.out.println("1) Ver lista completa de PCs (IP, SO y puertos)");
-			System.out.println("2) Agregar o eliminar un PC");
-			System.out.println("3) Clasificar PCs por nivel de riesgo");
-			System.out.println("0) Cerrar sesión");
-			op = readInt("Opción: ");
-			switch (op) {
-			case 1 -> s.verListaCompletaPCs(); // usar Sistema.getPCs()
-			case 2 -> s.agregarOEliminarPC(); // Sistema.agregarPC()/eliminarPC()
-			case 3 -> s.clasificarRiesgoPCs(); // contar vulns abiertas y rotular
-			case 0 -> System.out.println("Sesión cerrada.");
-			}
-			System.out.print("Opción: ");
-			op = leerInt();
+	    int op;
+	    do {
+	        System.out.println("\n=== MENÚ ADMIN ===");
+	        System.out.println("1) Ver lista completa de PCs (IP, SO y puertos)");
+	        System.out.println("2) Agregar o eliminar un PC");
+	        System.out.println("3) Clasificar PCs por nivel de riesgo");
+	        System.out.println("0) Cerrar sesión");
 
-			switch (op) {
-			case 1 -> System.out.println(" Ver lista completa de PCs");
-			case 2 -> System.out.println(" Agregar o eliminar PC");
-			case 3 -> System.out.println(" Clasificar PCs por riesgo");
-			case 0 -> System.out.println("Sesión cerrada (ADMIN).");
-			default -> System.out.println("Opción inválida.");
-			}
-		} while (op != 0);
+	        op = readInt("Opción: ");
+
+	        switch (op) {
+	            case 1 -> sistema.verListaCompletaPCs();
+	            case 2 -> sistema.agregarOEliminarPC();
+	            case 3 -> sistema.clasificarRiesgoPCs();
+	            case 0 -> System.out.println("Sesión cerrada (ADMIN).");
+	            default -> System.out.println("Opción inválida.");
+	        }
+
+	    } while (op != 0);
 	}
+
 
 	private void mostrarMenuUsuario() {
-		int op;
-		do {
-			System.out.println("\nMENÚ USUARIO");
-			System.out.println("1) Ver lista de PCs");
-			System.out.println("2) Escanear un PC (genera reportes.txt)");
-			System.out.println("3) Ver puertos abiertos y vulnerabilidades");
-			System.out.println("4) Ordenar PCs por clase de IP (A/B/C)");
-			System.out.println("0) Cerrar sesión");
-			op = readInt("Opción: ");
-			switch (op) {
-			case 1 -> s.verListaPCs(); // TODO: Sistema.getPCs()
-			case 2 -> s.escanearPCyGuardar(); // compilar datos + fecha + riesgo → reportes.txt
-			case 3 -> s.verPuertosAbiertosRed(); // recorrer todos y filtrar "Abierto"
-			case 4 -> s.ordenarPCsPorClaseIP(); // A/B/C según rangos
-			case 0 -> System.out.println("Sesión cerrada.");
-			}
-			op = leerInt();
+	    int op;
+	    do {
+	        System.out.println("\n=== MENÚ USUARIO ===");
+	        System.out.println("1) Ver lista de PCs");
+	        System.out.println("2) Escanear un PC (genera reportes.txt)");
+	        System.out.println("3) Ver puertos abiertos y vulnerabilidades");
+	        System.out.println("4) Ordenar PCs por clase de IP (A/B/C)");
+	        System.out.println("0) Cerrar sesión");
 
-			switch (op) {
-			case 1 -> System.out.println("Ver lista de PCs");
-			case 2 -> System.out.println("Escanear PC y generar reporte");
-			case 3 -> System.out.println("Ver puertos abiertos y vulnerabilidades");
-			case 4 -> System.out.println("Ordenar PCs por clase de IP");
-			case 0 -> System.out.println("Sesión cerrada (USER).");
-			default -> System.out.println("Opción inválida.");
-			}
-		} while (op != 0);
+	        op = readInt("Opción: ");
+
+	        switch (op) {
+	            case 1 -> sistema.verListaPCs();
+	            case 2 -> sistema.escanearPCyGuardar();
+	            case 3 -> sistema.verPuertosAbiertosRed();
+	            case 4 -> sistema.ordenarPCsPorClaseIP();
+	            case 0 -> System.out.println("Sesión cerrada (USER).");
+	            default -> System.out.println("Opción inválida.");
+	        }
+
+	    } while (op != 0);
 	}
+
 
 	// Util
 	private int readInt(String msg) {
@@ -117,4 +113,5 @@ public class UserInterface {
 			return 0;
 		}
 	}
+	
 }

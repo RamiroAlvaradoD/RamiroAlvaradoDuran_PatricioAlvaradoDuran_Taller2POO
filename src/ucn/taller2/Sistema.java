@@ -4,7 +4,11 @@ import java.util.Base64;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+
 public class Sistema {
 	private ArrayList<PC> listaPCs = new ArrayList<>();
 	private ArrayList<Puerto> listaPuertos = new ArrayList<>();
@@ -58,54 +62,55 @@ public class Sistema {
 	}
 
 	public void agregarOEliminarPC() {
-		Scanner sc = new Scanner(System.in);
-		int op;
-		
+		try (Scanner sc = new Scanner(System.in)) {
+			int op;
 			
-		
-		System.out.print("Deseas agregar (1) o eliminar (2) un PC?");
-		op = sc.nextInt();
-		switch (op) {
-		case 1:
-			System.out.print("ID: ");String id = sc.nextLine();
-			System.out.print("IP(xxx.xxx.xxx): ");String ip = sc.nextLine();
-			System.out.print("Sistema Operativo: ");String OS = sc.nextLine();			
-			PC pc = new PC(id, ip, OS);
-			listaPCs.add(pc);
-			System.out.print("Cantidad de puertos a agregar?: "); int cant = sc.nextInt();
-			sc.nextLine();
-			for(int i =0; i<cant;i++) {
-				System.out.print("Numero de puerto: "); int port = sc.nextInt();
-				sc.nextLine();
-				System.out.print("Estado(Abierto o Cerrado): "); String estado = sc.nextLine();
-				Puerto p = new Puerto(id,port,estado);
-				pc.getPuertos().add(p);
-				listaPuertos.add(p);
-			}
-			System.out.println("PC agregado correctamente");
-			break;
-		case 2:
-			System.out.print("ID del PC a Eliminar: "); String idPC = sc.nextLine();
-			PC encontrado = null;
-			for (PC pcs : listaPCs) {
-				if (pcs.getId().equals(idPC)) {
-					encontrado = pcs;
-					break;
-				}
 				
+			
+			System.out.print("Deseas agregar (1) o eliminar (2) un PC?");
+			op = sc.nextInt();
+			switch (op) {
+			case 1:
+				System.out.print("ID: ");String id = sc.nextLine();
+				System.out.print("IP(xxx.xxx.xxx): ");String ip = sc.nextLine();
+				System.out.print("Sistema Operativo: ");String OS = sc.nextLine();			
+				PC pc = new PC(id, ip, OS);
+				listaPCs.add(pc);
+				System.out.print("Cantidad de puertos a agregar?: "); int cant = sc.nextInt();
+				sc.nextLine();
+				for(int i =0; i<cant;i++) {
+					System.out.print("Numero de puerto: "); int port = sc.nextInt();
+					sc.nextLine();
+					System.out.print("Estado(Abierto o Cerrado): "); String estado = sc.nextLine();
+					Puerto p = new Puerto(id,port,estado);
+					pc.getPuertos().add(p);
+					listaPuertos.add(p);
+				}
+				System.out.println("PC agregado correctamente");
+				break;
+			case 2:
+				System.out.print("ID del PC a Eliminar: "); String idPC = sc.nextLine();
+				PC encontrado = null;
+				for (PC pcs : listaPCs) {
+					if (pcs.getId().equals(idPC)) {
+						encontrado = pcs;
+						break;
+					}
+					
+				}
+				if (encontrado !=null) {
+					listaPCs.remove(encontrado);
+					ArrayList<Puerto> porRemover = new ArrayList<>(encontrado.getPuertos());
+					listaPuertos.removeAll(porRemover);
+					System.out.println("PC eliminada correctamente.");
+				}else {
+					System.out.println("No se encontro esa PC.");
+				}
+				break;
+			default:
+				System.out.println("Ingrese una opcion valida");
+				break;
 			}
-			if (encontrado !=null) {
-				listaPCs.remove(encontrado);
-				ArrayList<Puerto> porRemover = new ArrayList<>(encontrado.getPuertos());
-				listaPuertos.removeAll(porRemover);
-				System.out.println("PC eliminada correctamente.");
-			}else {
-				System.out.println("No se encontro esa PC.");
-			}
-			break;
-		default:
-			System.out.println("Ingrese una opcion valida");
-			break;
 		}
 
 	}
@@ -146,36 +151,37 @@ public class Sistema {
 
 	public void escanearPCyGuardar() {
 		
-		Scanner sc = new Scanner(System.in);
-		System.out.print("ID del PC a escanear: ");
-		String id = sc.nextLine();
-		for (PC pc : listaPCs) {
-			if (pc.getId().equals(id)) {
-				int cantVuln = 0;
-				for (Puerto puerto : pc.getPuertos()) {
-					if (puerto.getVulnerabilidad() != null) cantVuln++;
-				}
-				String nivel = (cantVuln == 0 || cantVuln == 1) ? "Bajo": (cantVuln <=2) ? "Medio" : "Alto";
-				
-				
-				//Mostrar informacion
-				System.out.println("Escaneo de: "+id);
-				System.out.println("IP: "+pc.getIp() + ", SO: "+pc.getSistemaOperativo());
-				for (Puerto puerto : pc.getPuertos()) {
-					System.out.println(puerto);
-				}
-				System.out.println("Nivel de riesgo: "+ nivel);
-				
-				try {
-					FileWriter fw = new FileWriter("data/reportes.txt", true);
-					fw.write("Usuario: "+ usuarioActual+", PC: "+id+ ", IP: "+pc.getIp()+", SO: "+pc.getSistemaOperativo()+", Puertos: "
-					+pc.getPuertos().toString()+", Nivel de riesgo: "+nivel+", Fecha: "+java.time.LocalDateTime.now()+"\n");
-					fw.close();
-				}catch(IOException e) {
-					System.out.println("Error al guardar el reporte");					
-				}
-				return;
-			}	
+		try (Scanner sc = new Scanner(System.in)) {
+			System.out.print("ID del PC a escanear: ");
+			String id = sc.nextLine();
+			for (PC pc : listaPCs) {
+				if (pc.getId().equals(id)) {
+					int cantVuln = 0;
+					for (Puerto puerto : pc.getPuertos()) {
+						if (puerto.getVulnerabilidad() != null) cantVuln++;
+					}
+					String nivel = (cantVuln == 0 || cantVuln == 1) ? "Bajo": (cantVuln <=2) ? "Medio" : "Alto";
+					
+					
+					//Mostrar informacion
+					System.out.println("Escaneo de: "+id);
+					System.out.println("IP: "+pc.getIp() + ", SO: "+pc.getSistemaOperativo());
+					for (Puerto puerto : pc.getPuertos()) {
+						System.out.println(puerto);
+					}
+					System.out.println("Nivel de riesgo: "+ nivel);
+					
+					try {
+						FileWriter fw = new FileWriter("data/reportes.txt", true);
+						fw.write("Usuario: "+ usuarioActual+", PC: "+id+ ", IP: "+pc.getIp()+", SO: "+pc.getSistemaOperativo()+", Puertos: "
+						+pc.getPuertos().toString()+", Nivel de riesgo: "+nivel+", Fecha: "+java.time.LocalDateTime.now()+"\n");
+						fw.close();
+					}catch(IOException e) {
+						System.out.println("Error al guardar el reporte");					
+					}
+					return;
+				}	
+			}
 		}
 		System.out.println("No se encontro ese PC");
 
@@ -222,8 +228,7 @@ public class Sistema {
 	}
 
 	private void loadUsers(String file) {
-		try {
-			Scanner sc = new Scanner(new File(file));
+		try (Scanner sc = new Scanner(new File(file))) {
 			while (sc.hasNextLine()) {
 				String linea = sc.nextLine();
 				String[] data = linea.split(";");
@@ -240,8 +245,7 @@ public class Sistema {
 	}
 
 	public void loadVuln(String file) {
-		try {
-			Scanner sc = new Scanner(new File(file));
+		try (Scanner sc = new Scanner(new File(file))) {
 			while (sc.hasNextLine()) {
 				String linea = sc.nextLine();
 				String[] data = linea.split("\\|");
@@ -260,13 +264,15 @@ public class Sistema {
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("No se puede abrir " + file);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
 
 	public void loadPorts(String file) {
-		try {
-			Scanner sc = new Scanner(new File(file));
+		try (Scanner sc = new Scanner(new File(file))) {
 			while (sc.hasNextLine()) {
 				String linea = sc.nextLine();
 				String[] data = linea.split("\\|");
@@ -285,13 +291,15 @@ public class Sistema {
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("No se puede abrir " + file);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
 
 	public void loadPC(String file) {
-		try {
-			Scanner sc = new Scanner(new File(file));
+		try (Scanner sc = new Scanner(new File(file))) {
 			while (sc.hasNextLine()) {
 				String linea = sc.nextLine();
 				String[] data = linea.split("\\|");

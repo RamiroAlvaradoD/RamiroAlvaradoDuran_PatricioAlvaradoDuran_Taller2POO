@@ -23,9 +23,6 @@ public class Puerto {
 		return vulnerabilidad;
 	}
 
-    public Vulnerabilidad getVulnerabilidad() {
-        return vulnerabilidad;
-    }
     public void setVulnerabilidad(Vulnerabilidad vuln) {
     	vulnerabilidad = vuln;
     }
@@ -36,4 +33,8 @@ public class Puerto {
         String v = (vulnerabilidad == null) ? "sin vuln" : vulnerabilidad.getNombre();
         return "Puerto " + numero + " (" + estado + ", " + v + ")";
     }
+
+	public String getEstado() {
+		return estado;
+	}
 }
