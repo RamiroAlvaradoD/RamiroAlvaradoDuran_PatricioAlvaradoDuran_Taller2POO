@@ -44,9 +44,9 @@ public class UserInterface {
             System.out.println("0) Cerrar sesión");
             op = readInt("Opción: ");
             switch (op) {
-                case 1 -> verListaCompletaPCs();     //  usar Sistema.getPCs()
-                case 2 -> agregarOEliminarPC();      //  Sistema.agregarPC()/eliminarPC()
-                case 3 -> clasificarRiesgoPCs();     //  contar vulns abiertas y rotular
+                case 1 -> s.verListaCompletaPCs();     //  usar Sistema.getPCs()
+                case 2 -> s.agregarOEliminarPC();      //  Sistema.agregarPC()/eliminarPC()
+                case 3 -> s.clasificarRiesgoPCs();     //  contar vulns abiertas y rotular
                 case 0 -> System.out.println("Sesión cerrada.");
                 default -> System.out.println("Opción inválida.");
             }
@@ -65,24 +65,17 @@ public class UserInterface {
             System.out.println("0) Cerrar sesión");
             op = readInt("Opción: ");
             switch (op) {
-                case 1 -> verListaPCs();             //TODO: Sistema.getPCs()
-                case 2 -> escanearPCyGuardar();      //  compilar datos + fecha + riesgo → reportes.txt
-                case 3 -> verPuertosAbiertosRed();   //  recorrer todos y filtrar "Abierto"
-                case 4 -> ordenarPCsPorClaseIP();    //  A/B/C según rangos
+                case 1 -> s.verListaPCs();             //TODO: Sistema.getPCs()
+                case 2 -> s.escanearPCyGuardar();      //  compilar datos + fecha + riesgo → reportes.txt
+                case 3 -> s.verPuertosAbiertosRed();   //  recorrer todos y filtrar "Abierto"
+                case 4 -> s.ordenarPCsPorClaseIP();    //  A/B/C según rangos
                 case 0 -> System.out.println("Sesión cerrada.");
                 default -> System.out.println("Opción inválida.");
             }
         } while (op != 0);
     }
 
-    // Placeholders de cada opción
-    private void verListaCompletaPCs()      { System.out.println("Mostrar PCs con IP, SO y puertos."); }
-    private void agregarOEliminarPC()       { System.out.println("Crear/Eliminar PC + puertos asociados."); }
-    private void clasificarRiesgoPCs()      { System.out.println("Riesgo: Bajo(0–1), Medio(1–2), Alto(≥3)."); }
-    private void verListaPCs()              { System.out.println("Listar PCs (info básica)."); }
-    private void escanearPCyGuardar()       { System.out.println("Guardar: pc, info, puertos, usuario, riesgo, fecha → reportes.txt"); }
-    private void verPuertosAbiertosRed()    { System.out.println("Listar TODOS los puertos 'Abierto' + vulnerabilidad."); }
-    private void ordenarPCsPorClaseIP()     { System.out.println(" Ordenar por clase A/B/C según rangos."); }
+ 
 
     //Util
     private int readInt(String msg) {

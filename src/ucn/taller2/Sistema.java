@@ -57,4 +57,32 @@ public class Sistema {
 	    }
 	    return null; // si no encuentra al usuario
 	}
+	public Object agregarOEliminarPC() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object verListaCompletaPCs() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object clasificarRiesgoPCs() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object verListaPCs() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object escanearPCyGuardar() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object verPuertosAbiertosRed() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public Object ordenarPCsPorClaseIP() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
