@@ -19,9 +19,9 @@ public class Puerto {
         return numero;
     }
 
-    public String getEstado() {
-        return estado;
-    }
+	public Vulnerabilidad getVulnerabilidad() {
+		return vulnerabilidad;
+	}
 
     public Vulnerabilidad getVulnerabilidad() {
         return vulnerabilidad;
@@ -37,4 +37,3 @@ public class Puerto {
         return "Puerto " + numero + " (" + estado + ", " + v + ")";
     }
 }
-

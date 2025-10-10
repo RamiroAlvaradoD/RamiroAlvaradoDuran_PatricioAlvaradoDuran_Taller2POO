@@ -1,15 +1,10 @@
 package ucn.taller2;
 
+import java.util.Base64;
+import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Scanner;
-
 public class Sistema {
 	private ArrayList<PC> listaPCs = new ArrayList<>();
 	private ArrayList<Puerto> listaPuertos = new ArrayList<>();
