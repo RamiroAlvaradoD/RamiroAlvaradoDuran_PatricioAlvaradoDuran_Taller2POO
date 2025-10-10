@@ -3,12 +3,15 @@ package ucn.taller2;
 import java.util.Scanner;
 
 public class UserInterface {
+	Sistema s = new Sistema();
     private final Scanner sc = new Scanner(System.in);
 
     public void start() {
         while (true) {
-            if (!login()) break; // reemplazar por login real con hash
-            String rol = elegirRolProvisorio(); // para luego, usar rol del Usuario autenticado
+            String usuario = login();
+            if (usuario ==  null) break;
+            
+            String rol = s.getRolUsuario(usuario);
             if ("ADMIN".equals(rol)) menuAdmin();
             else if ("USER".equals(rol)) menuUsuario();
             else break;
@@ -16,20 +19,19 @@ public class UserInterface {
         System.out.println("Adiós.");
     }
 
-    // LOGIN (provisorio, aun tenemos que armar los metodos en Sistema) 
-    private boolean login() {
+    // LOGIN 
+    private String login() {
         System.out.println("\n=== LOGIN ===");
         System.out.print("Usuario: "); String u = sc.nextLine();
         System.out.print("Password: "); String p = sc.nextLine();
-        // para despues: hash(p) y comparar con usuarios.txt (SHA-256 + Base64)
-        System.out.println("[TODO] Autenticación real pendiente.");
-        return true; // simular que entra
+        boolean autorizado = s.login(u, p);
+        if (!autorizado) { System.out.println("usuario o contraseña incorrectos");
+        return null;
+        }
+        System.out.println("Autenticacion Exitosa");
+        return u;
     }
-    private String elegirRolProvisorio() {
-        System.out.println("1) ADMIN  2) USER  0) Salir");
-        int op = readInt("Opción: ");
-        return switch (op) { case 1 -> "ADMIN"; case 2 -> "USER"; default -> null; };
-    }
+ 
 
     // MENÚ ADMIN 
     private void menuAdmin() {
