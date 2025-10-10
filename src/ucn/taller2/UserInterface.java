@@ -75,7 +75,6 @@ public class UserInterface {
 			case 4 -> s.ordenarPCsPorClaseIP(); // A/B/C según rangos
 			case 0 -> System.out.println("Sesión cerrada.");
 			}
-			System.out.print("Opción: ");
 			op = leerInt();
 
 			switch (op) {

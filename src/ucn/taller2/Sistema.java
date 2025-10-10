@@ -64,7 +64,55 @@ public class Sistema {
 	}
 
 	public void agregarOEliminarPC() {
-		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in);
+		int op;
+		
+			
+		
+		System.out.print("Deseas agregar (1) o eliminar (2) un PC?");
+		op = sc.nextInt();
+		switch (op) {
+		case 1:
+			System.out.print("ID: ");String id = sc.nextLine();
+			System.out.print("IP(xxx.xxx.xxx): ");String ip = sc.nextLine();
+			System.out.print("Sistema Operativo: ");String OS = sc.nextLine();			
+			PC pc = new PC(id, ip, OS);
+			listaPCs.add(pc);
+			System.out.print("Cantidad de puertos a agregar?: "); int cant = sc.nextInt();
+			sc.nextLine();
+			for(int i =0; i<cant;i++) {
+				System.out.print("Numero de puerto: "); int port = sc.nextInt();
+				sc.nextLine();
+				System.out.print("Estado(Abierto o Cerrado): "); String estado = sc.nextLine();
+				Puerto p = new Puerto(id,port,estado);
+				pc.getPuertos().add(p);
+				listaPuertos.add(p);
+			}
+			System.out.println("PC agregado correctamente");
+			break;
+		case 2:
+			System.out.print("ID del PC a Eliminar: "); String idPC = sc.nextLine();
+			PC encontrado = null;
+			for (PC pcs : listaPCs) {
+				if (pcs.getId().equals(idPC)) {
+					encontrado = pcs;
+					break;
+				}
+				
+			}
+			if (encontrado !=null) {
+				listaPCs.remove(encontrado);
+				ArrayList<Puerto> porRemover = new ArrayList<>(encontrado.getPuertos());
+				listaPuertos.removeAll(porRemover);
+				System.out.println("PC eliminada correctamente.");
+			}else {
+				System.out.println("No se encontro esa PC.");
+			}
+			break;
+		default:
+			System.out.println("Ingrese una opcion valida");
+			break;
+		}
 
 	}
 
