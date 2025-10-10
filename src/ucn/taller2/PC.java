@@ -1,4 +1,5 @@
 package ucn.taller2;
+
 import java.util.ArrayList;
 
 public class PC {
@@ -6,6 +7,7 @@ public class PC {
 	private String ip;
 	private String sistemaOperativo;
 	private ArrayList<Puerto> puertos;
+
 	
 	public PC(String id, String ip, String sistemaOperativo) {
 		this.id = id;
@@ -30,4 +32,9 @@ public class PC {
 		return puertos;
 	}
 
+	@Override
+	public String toString() {
+		return "PC{" + "id='" + id + '\'' + ", ip='" + ip + '\'' + ", sistemaOperativo='" + sistemaOperativo + '\''
+				+ '}';
+	}
 }
