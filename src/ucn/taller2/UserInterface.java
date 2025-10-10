@@ -36,6 +36,12 @@ public class UserInterface {
             System.out.println("2) Agregar o eliminar un PC");
             System.out.println("3) Clasificar PCs por nivel de riesgo");
             System.out.println("0) Cerrar sesión");
+            op = readInt("Opción: ");
+            switch (op) {
+                case 1 -> s.verListaCompletaPCs();     //  usar Sistema.getPCs()
+                case 2 -> s.agregarOEliminarPC();      //  Sistema.agregarPC()/eliminarPC()
+                case 3 -> s.clasificarRiesgoPCs();     //  contar vulns abiertas y rotular
+                case 0 -> System.out.println("Sesión cerrada.");
             System.out.print("Opción: ");
             opcion = leerInt();
 
@@ -58,6 +64,13 @@ public class UserInterface {
             System.out.println("3) Ver puertos abiertos y vulnerabilidades");
             System.out.println("4) Ordenar PCs por clase de IP (A/B/C)");
             System.out.println("0) Cerrar sesión");
+            op = readInt("Opción: ");
+            switch (op) {
+                case 1 -> s.verListaPCs();             //TODO: Sistema.getPCs()
+                case 2 -> s.escanearPCyGuardar();      //  compilar datos + fecha + riesgo → reportes.txt
+                case 3 -> s.verPuertosAbiertosRed();   //  recorrer todos y filtrar "Abierto"
+                case 4 -> s.ordenarPCsPorClaseIP();    //  A/B/C según rangos
+                case 0 -> System.out.println("Sesión cerrada.");
             System.out.print("Opción: ");
             opcion = leerInt();
 
@@ -72,6 +85,13 @@ public class UserInterface {
         } while (opcion != 0);
     }
 
+ 
+
+    //Util
+    private int readInt(String msg) {
+        while (true) {
+            try { System.out.print(msg); return Integer.parseInt(sc.nextLine().trim()); }
+            catch (NumberFormatException e) { System.out.println("Número inválido."); }
     private int leerInt() {
         try {
             return Integer.parseInt(sc.nextLine().trim());
