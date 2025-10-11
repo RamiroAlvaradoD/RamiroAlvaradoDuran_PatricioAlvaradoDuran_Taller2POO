@@ -14,13 +14,12 @@ public class UserInterface {
 	Sistema s = new Sistema();
 
 	public void start() {
-	    // Cargar datos si no se inyectó un Sistema desde Main
+	   
 	    if (this.sistema == null) {
 	        this.sistema = new Sistema();
 	        this.sistema.loadFiles();
 	    } else {
-	        // Si prefieres cargar aquí siempre, descomenta:
-	        // this.sistema.loadFiles();
+
 	    }
 
 	    boolean continuar = true;

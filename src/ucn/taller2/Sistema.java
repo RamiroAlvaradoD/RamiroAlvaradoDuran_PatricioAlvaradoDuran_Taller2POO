@@ -51,14 +51,14 @@ public class Sistema {
 				String userStored = datos[0];
 				if (userStored.equals(usuario) && datos.length >= 3) {
 					sc.close();
-					return datos[2]; // retorna el rol, ej. "ADMIN" o "USER"
+					return datos[2]; 
 				}
 			}
 			sc.close();
 		} catch (Exception e) {
 			System.out.println("Error leyendo usuarios.txt");
 		}
-		return null; // si no encuentra al usuario
+		return null; 
 	}
 
 	public void agregarOEliminarPC(Scanner sc) {
