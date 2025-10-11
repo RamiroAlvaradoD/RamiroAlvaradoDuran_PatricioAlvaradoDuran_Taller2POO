@@ -61,59 +61,90 @@ public class Sistema {
 		return null; // si no encuentra al usuario
 	}
 
-	public void agregarOEliminarPC() {
-		try (Scanner sc = new Scanner(System.in)) {
-			int op;
-			
-				
-			
-			System.out.print("Deseas agregar (1) o eliminar (2) un PC?");
-			op = sc.nextInt();
-			switch (op) {
-			case 1:
-				System.out.print("ID: ");String id = sc.nextLine();
-				System.out.print("IP(xxx.xxx.xxx): ");String ip = sc.nextLine();
-				System.out.print("Sistema Operativo: ");String OS = sc.nextLine();			
-				PC pc = new PC(id, ip, OS);
-				listaPCs.add(pc);
-				System.out.print("Cantidad de puertos a agregar?: "); int cant = sc.nextInt();
-				sc.nextLine();
-				for(int i =0; i<cant;i++) {
-					System.out.print("Numero de puerto: "); int port = sc.nextInt();
-					sc.nextLine();
-					System.out.print("Estado(Abierto o Cerrado): "); String estado = sc.nextLine();
-					Puerto p = new Puerto(id,port,estado);
-					pc.getPuertos().add(p);
-					listaPuertos.add(p);
-				}
-				System.out.println("PC agregado correctamente");
-				break;
-			case 2:
-				System.out.print("ID del PC a Eliminar: "); String idPC = sc.nextLine();
-				PC encontrado = null;
-				for (PC pcs : listaPCs) {
-					if (pcs.getId().equals(idPC)) {
-						encontrado = pcs;
-						break;
-					}
-					
-				}
-				if (encontrado !=null) {
-					listaPCs.remove(encontrado);
-					ArrayList<Puerto> porRemover = new ArrayList<>(encontrado.getPuertos());
-					listaPuertos.removeAll(porRemover);
-					System.out.println("PC eliminada correctamente.");
-				}else {
-					System.out.println("No se encontro esa PC.");
-				}
-				break;
-			default:
-				System.out.println("Ingrese una opcion valida");
-				break;
-			}
-		}
+	public void agregarOEliminarPC(Scanner sc) {
+	    System.out.print("¿Deseas agregar (1) o eliminar (2) un PC? ");
+	    int op;
+	    try {
+	        op = Integer.parseInt(sc.nextLine().trim());
+	    } catch (NumberFormatException e) {
+	        System.out.println("Opción inválida.");
+	        return;
+	    }
 
+	    switch (op) {
+	        case 1: { // AGREGAR
+	            System.out.print("ID: ");
+	            String id = sc.nextLine().trim();
+
+	            System.out.print("IP (xxx.xxx.xxx.xxx): ");
+	            String ip = sc.nextLine().trim();
+
+	            System.out.print("Sistema Operativo: ");
+	            String OS = sc.nextLine().trim();
+
+	            if (getPCById(id) != null) {
+	                System.out.println("Ya existe un PC con ese ID.");
+	                return;
+	            }
+
+	            PC pc = new PC(id, ip, OS);
+	            listaPCs.add(pc);
+
+	            System.out.print("Cantidad de puertos a agregar?: ");
+	            int cant = 0;
+	            try { cant = Integer.parseInt(sc.nextLine().trim()); } catch (NumberFormatException ignored) {}
+
+	            for (int i = 0; i < cant; i++) {
+	                System.out.print("Número de puerto: ");
+	                int port;
+	                try { port = Integer.parseInt(sc.nextLine().trim()); }
+	                catch (NumberFormatException e) { System.out.println("Puerto inválido, se omite."); continue; }
+
+	                System.out.print("Estado (Abierto o Cerrado): ");
+	                String estado = sc.nextLine().trim();
+
+	                Puerto p = new Puerto(id, port, estado);
+	                // enlaza vulnerabilidad si existe
+	                Vulnerabilidad v = getVulnByPort(port);
+	                if (v != null) p.setVulnerabilidad(v);
+
+	                pc.getPuertos().add(p);
+	                listaPuertos.add(p);
+	            }
+
+	            System.out.println("PC agregada correctamente.");
+	            break;
+	        }
+
+	        case 2: { // ELIMINAR
+	            System.out.print("ID del PC a eliminar: ");
+	            String idPC = sc.nextLine().trim();
+
+	            PC encontrado = null;
+	            for (PC pcs : listaPCs) {
+	                if (pcs.getId().equals(idPC)) { encontrado = pcs; break; }
+	            }
+
+	            if (encontrado != null) {
+	                // quitar puertos asociados del global
+	                ArrayList<Puerto> porRemover = new ArrayList<>(encontrado.getPuertos());
+	                for (Puerto p : porRemover) {
+	                    listaPuertos.remove(p);
+	                }
+	                listaPCs.remove(encontrado);
+	                System.out.println("PC eliminada correctamente.");
+	            } else {
+	                System.out.println("No se encontró esa PC.");
+	            }
+	            break;
+	        }
+
+	        default:
+	            System.out.println("Ingrese una opción válida");
+	            break;
+	    }
 	}
+
 
 	public void verListaCompletaPCs() {
 		for (PC pc : listaPCs) {
@@ -149,42 +180,42 @@ public class Sistema {
 
 	}
 
-	public void escanearPCyGuardar() {
-		
-		try (Scanner sc = new Scanner(System.in)) {
-			System.out.print("ID del PC a escanear: ");
-			String id = sc.nextLine();
-			for (PC pc : listaPCs) {
-				if (pc.getId().equals(id)) {
-					int cantVuln = 0;
-					for (Puerto puerto : pc.getPuertos()) {
-						if (puerto.getVulnerabilidad() != null) cantVuln++;
-					}
-					String nivel = (cantVuln == 0 || cantVuln == 1) ? "Bajo": (cantVuln <=2) ? "Medio" : "Alto";
-					
-					
-					//Mostrar informacion
-					System.out.println("Escaneo de: "+id);
-					System.out.println("IP: "+pc.getIp() + ", SO: "+pc.getSistemaOperativo());
-					for (Puerto puerto : pc.getPuertos()) {
-						System.out.println(puerto);
-					}
-					System.out.println("Nivel de riesgo: "+ nivel);
-					
-					try {
-						FileWriter fw = new FileWriter("data/reportes.txt", true);
-						fw.write("Usuario: "+ usuarioActual+", PC: "+id+ ", IP: "+pc.getIp()+", SO: "+pc.getSistemaOperativo()+", Puertos: "
-						+pc.getPuertos().toString()+", Nivel de riesgo: "+nivel+", Fecha: "+java.time.LocalDateTime.now()+"\n");
-						fw.close();
-					}catch(IOException e) {
-						System.out.println("Error al guardar el reporte");					
-					}
-					return;
-				}	
-			}
-		}
-		System.out.println("No se encontro ese PC");
+	public void escanearPCyGuardar(Scanner sc) {
+	    try  {
+	        System.out.print("ID del PC a escanear: ");
+	        String id = sc.nextLine();
+	        for (PC pc : listaPCs) {
+	            if (pc.getId().equals(id)) {
+	                int cantVuln = 0;
+	                for (Puerto puerto : pc.getPuertos()) {
+	                    if (puerto.getVulnerabilidad() != null) cantVuln++;
+	                }
+	                String nivel = (cantVuln == 0 || cantVuln == 1) ? "Bajo" : (cantVuln <= 2) ? "Medio" : "Alto";
 
+	                // Mostrar informacion
+	                System.out.println("Escaneo de: " + id);
+	                System.out.println("IP: " + pc.getIp() + ", SO: " + pc.getSistemaOperativo());
+	                for (Puerto puerto : pc.getPuertos()) {
+	                    System.out.println(puerto);
+	                }
+	                System.out.println("Nivel de riesgo: " + nivel);
+
+	                try {
+	                    FileWriter fw = new FileWriter("data/reportes.txt", true);
+	                    fw.write("Usuario: " + usuarioActual + ", PC: " + id + ", IP: " + pc.getIp() + ", SO: " + pc.getSistemaOperativo() + ", Puertos: "
+	                            + pc.getPuertos().toString() + ", Nivel de riesgo: " + nivel + ", Fecha: " + java.time.LocalDateTime.now() + "\n");
+	                    fw.close();
+	                } catch (IOException e) {
+	                    System.out.println("Error al guardar el reporte");
+	                }
+	                return;
+	            }
+	        }
+	    } catch (Exception e) {
+	        
+	    }
+
+	    System.out.println("No se encontro ese PC");
 	}
 
 	public void verPuertosAbiertosRed() {
@@ -270,6 +301,8 @@ public class Sistema {
 		}
 
 	}
+	
+	
 
 	public void loadPorts(String file) {
 		try (Scanner sc = new Scanner(new File(file))) {
@@ -315,4 +348,23 @@ public class Sistema {
 		}
 
 	}
+	
+	private PC getPCById(String id) {
+	    for (PC pc : listaPCs) {
+	        if (pc.getId().equalsIgnoreCase(id)) {
+	            return pc;
+	        }
+	    }
+	    return null;
+	}
+	
+	private Vulnerabilidad getVulnByPort(int numPuerto) {
+	    for (Vulnerabilidad v : listaVulnerabilidades) {
+	        if (v.getPuertoAfectado() == numPuerto) {
+	            return v;
+	        }
+	    }
+	    return null;
+	}
+	
 }

@@ -14,36 +14,47 @@ public class UserInterface {
 	Sistema s = new Sistema();
 
 	public void start() {
-		boolean continuar = true;
-		s.loadFiles();
-		while (continuar) {
-			System.out.println("\nLOGIN  ");
-			System.out.print("Usuario: ");
-			String user = sc.nextLine();
-			System.out.print("Contraseña: ");
-			String pass = sc.nextLine();
+	    // Cargar datos si no se inyectó un Sistema desde Main
+	    if (this.sistema == null) {
+	        this.sistema = new Sistema();
+	        this.sistema.loadFiles();
+	    } else {
+	        // Si prefieres cargar aquí siempre, descomenta:
+	        // this.sistema.loadFiles();
+	    }
 
-			if (s.login(user, pass)) {
-				String rol = s.getRolUsuario(user);
-				System.out.println("Bienvenid@, has entrado como " + rol);
-				if ("ADMIN".equalsIgnoreCase(rol)) {
-					mostrarMenuAdmin();
-				}else if ("USER".equalsIgnoreCase(rol)) {
-					mostrarMenuUsuario();
-				}
-			} else {
-				System.out.println("Usuario o contraseña incorrectos. Intenta de nuevo");
+	    boolean continuar = true;
+	    while (continuar) {
+	        System.out.println("\n=== LOGIN ===");
+	        System.out.print("Usuario: ");
+	        String user = sc.nextLine().trim();
+	        System.out.print("Contraseña: ");
+	        String pass = sc.nextLine();
 
-			}
-			System.out.print("\nDeseas intentar de nuevo?(S/N): ");
-			String op = sc.nextLine();
-			if (!op.equalsIgnoreCase("S")) {
-				System.out.println("Saliendo del sistema...");
-				continuar =false;
-			}
-		}
+	        if (sistema.login(user, pass)) {
+	            String rol = sistema.getRolUsuario(user);
+	            System.out.println("Bienvenid@, has entrado como " + rol);
 
+	            if ("ADMIN".equalsIgnoreCase(rol)) {
+	                mostrarMenuAdmin();
+	            } else if ("USER".equalsIgnoreCase(rol)) {
+	                mostrarMenuUsuario();
+	            } else {
+	                System.out.println("Rol no reconocido para este usuario.");
+	            }
+
+	        } else {
+	            System.out.println("Usuario o contraseña incorrectos. Intenta de nuevo.");
+	        }
+
+	        System.out.print("\n¿Deseas intentar de nuevo? (S/N): ");
+	        String op = sc.nextLine().trim();
+	        continuar = op.equalsIgnoreCase("S");
+	    }
+
+	    System.out.println("Saliendo del sistema...");
 	}
+
 
 	private void mostrarMenuAdmin() {
 	    int op;
@@ -58,7 +69,7 @@ public class UserInterface {
 
 	        switch (op) {
 	            case 1 -> sistema.verListaCompletaPCs();
-	            case 2 -> sistema.agregarOEliminarPC();
+	            case 2 -> sistema.agregarOEliminarPC(sc);
 	            case 3 -> sistema.clasificarRiesgoPCs();
 	            case 0 -> System.out.println("Sesión cerrada (ADMIN).");
 	            default -> System.out.println("Opción inválida.");
@@ -82,7 +93,7 @@ public class UserInterface {
 
 	        switch (op) {
 	            case 1 -> sistema.verListaPCs();
-	            case 2 -> sistema.escanearPCyGuardar();
+	            case 2 -> sistema.escanearPCyGuardar(sc);
 	            case 3 -> sistema.verPuertosAbiertosRed();
 	            case 4 -> sistema.ordenarPCsPorClaseIP();
 	            case 0 -> System.out.println("Sesión cerrada (USER).");
@@ -95,23 +106,14 @@ public class UserInterface {
 
 	// Util
 	private int readInt(String msg) {
-		while (true) {
-			try {
-				System.out.print(msg);
-				return Integer.parseInt(sc.nextLine().trim());
-			} catch (NumberFormatException e) {
-				System.out.println("Número inválido.");
-			}
-		}
+	    while (true) {
+	        try {
+	            System.out.print(msg);
+	            return Integer.parseInt(sc.nextLine().trim());
+	        } catch (NumberFormatException e) {
+	            System.out.println("Entrada inválida. Intenta de nuevo.");
+	        }
+	    }
 	}
-
-	private int leerInt() {
-		try {
-			return Integer.parseInt(sc.nextLine().trim());
-		} catch (Exception e) {
-			System.out.println("Entrada inválida, usando 0 por defecto.");
-			return 0;
-		}
-	}
-	
 }
+	
